@@ -12,22 +12,23 @@ app.use(express.static('public'));
 app.get('/data', function (req, res) {
     MongoClient.connect('mongodb://localhost:27017/weather', function (error, db) {
         if (error) {
-            console.log("sss - " + error);
+            console.log("connection error " + error);
         }
-        var collection = db.collection('weather');
+         var collection = db.collection('weather');
       
-        console.log("qqq - " + collection.find().toArray(function (err, docs) {
+         collection.find().toArray(function (err, docs) {
             if (err) {
-                console.log("aaa - " + err);
+                console.log("collection error " + err);
                 docs = null;
             }
+            db.close();
             res.send(docs);
-        }));
-        db.close();
+        });
+
     });
 });
 
 app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
+    console.log('RivneWeather is  listening on port 3000!');
 });
 

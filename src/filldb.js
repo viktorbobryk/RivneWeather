@@ -1,5 +1,5 @@
 'use strict';
- console.log("app works ");
+ console.log("filldb works ");
 var request = require('request');
 var Logger = require('./services/logger.js');
 var MongoClient = require('mongodb').MongoClient;
@@ -25,18 +25,14 @@ setInterval(function () {
 
 
                 var collection = db.collection('weather');
-                // Insert some documents
-                console.log("ttt" + JSON.parse(body).main);
-                console.log("kkk" + collection);
+                
                 collection.insertOne(JSON.parse(body).main, function (error, result) {
                     if (error) {
                         logger.logError(error);
                     }
-                    console.log("fff" + result);
 
                 });
-
-
+                
                 db.close();
             });
         }
