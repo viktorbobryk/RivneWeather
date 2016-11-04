@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Sinoptik.rv</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div id="app"></div>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min.js"></script>
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.6/Chart.min.js"></script>
+        <canvas id="temp-chart" width="900px" height="300"></canvas>
+        <canvas id="humid-chart" width="900px" height="300"></canvas>
+        <canvas id="press-chart" width="900px" height="300"></canvas>
+        <script type="text/javascript">
+            var app = {};
+            
+            app.weatherModel = Backbone.Model.extend({});
+            
+            app.weatherCollection = Backbone.Collection.extend({
+                url: '/data',
+                
+                model: app.weatherModel
+            });
+            
+            app.weatherView = Backbone.View.extend({
+                el: '#app',
+
+                weatherCollection: new app.weatherCollection(),
+
+                initialize: function () {
+                    this.listenTo(this.weatherCollection, 'update', this.render);
+                    this.weatherCollection.fetch();
+                },
+
+                render: function () {
+
+                    this.$el.html('<h1>Погодні умови в місті Рівне за останню годину, (інтервал - 10 хв)</h1>');
+                    this.addChart();
+                    this.addChart2();
+                    this.addChart3();
+                },
+
+                addChart: function () {
+                    var array = [];
+                    var tempCollection = this.weatherCollection;
+                    for (var i = tempCollection.length - 6; i < tempCollection.length; ++i) {
+                        var celsiusTemp = tempCollection.at(i).get('temp') - 273.15;
+                        array.push(celsiusTemp);
+                    }
+
+                    console.log(tempCollection.at(25));
+                    var chartData = {
+                        type: "bar",
+                        data: {
+                            labels: [60, 50, 40, 30, 20, 10],
+                            datasets: [
+                                {
+                                    label: 'Температура, °C ',
+                                    backgroundColor: ["rgba(220,0,0,0.5)", "rgba(220,0,0,0.5)", "rgba(220,0,0,0.5)", "rgba(220,0,0,0.5)", "rgba(220,0,0,0.5)","rgba(220,0,0,0.5)"],
+                                    data: array
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: false
+                        }
+                    };
+
+                    console.log(chartData);
+                    var ctx = document.getElementById("temp-chart");
+                    var myChart = new Chart(ctx, chartData);
+                },
+
+                addChart2: function () {
+                    var array = [];
+                    var tempCollection = this.weatherCollection;
+                    for (var i = tempCollection.length - 6; i < tempCollection.length; ++i) {
+
+                        array.push(tempCollection.at(i).get('humidity'));
+                    }
+
+                    var chartData = {
+                        type: "bar",
+                        data: {
+                            labels: [60, 50, 40, 30, 20, 10],
+                            datasets: [
+                                {
+                                    label: 'Вологість, %',
+                                    backgroundColor: ["rgba(0,0,220,0.5)", "rgba(0,0,220,0.5)", "rgba(0,0,220,0.5)", "rgba(0,0,220,0.5)", "rgba(0,0,220,0.5)","rgba(0,0,220,0.5)"],
+                                    data: array
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: false
+                        }
+                    };
+
+                    console.log(chartData);
+                    var ctx = document.getElementById("humid-chart");
+                    var myChart2 = new Chart(ctx, chartData);
+                },
+
+                addChart3: function () {
+                    var array = [];
+                    var tempCollection = this.weatherCollection;
+                    for (var i = tempCollection.length - 6; i < tempCollection.length; ++i) {
+                        var press = tempCollection.at(i).get('pressure');
+                        array.push(press);
+                    }
+
+                    var chartData = {
+                        type: "bar",
+                        data: {
+                            labels: [60, 50, 40, 30, 20, 10],
+                            datasets: [
+                                {
+                                    label: 'Тиск, гПа ',
+                                    backgroundColor: ["rgba(0,220,0,0.5)", "rgba(0,220,0,0.5)", "rgba(0,220,0,0.5)", "rgba(0,220,0,0.5)", "rgba(0,220,0,0.5)","rgba(0,220,0,0.5)"],
+                                    data: array
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: false
+                        }
+                    };
+
+                    console.log(chartData);
+                    var ctx = document.getElementById("press-chart");
+                    var myChart3 = new Chart(ctx, chartData);
+                }
+            });
+    
+            $(function () {
+                new app.weatherView();
+            });           
+        </script>
+    </body>
+</html>
