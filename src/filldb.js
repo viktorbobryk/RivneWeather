@@ -4,8 +4,8 @@ var request = require('request');
 var Logger = require('./services/logger.js');
 var MongoClient = require('mongodb').MongoClient;
 
-var url = 'http://api.openweathermap.org/data/2.5/weather?q=Rivne,ua&APPID=3e78ad2536ed323a1c1e68f8512485b0';
-var urlDB = 'mongodb://localhost:27017/weather';
+var url = 'https://api.darksky.net/forecast/73ca2db6aa635b831a24746659e7c907/50.37,26.15';
+var urlDB = 'mongodb://localhost:27017/weather2';
 
 var logger = new Logger('./logs/log.txt', false);
 
@@ -30,7 +30,8 @@ setInterval(function () {
                     if (error) {
                         logger.logError(error);
                     }
-
+                    console.log(result);
+                    console.log("----------------------------");
                 });
                 
                 db.close();
