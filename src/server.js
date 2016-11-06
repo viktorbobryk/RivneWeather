@@ -14,7 +14,7 @@ app.get('/data', function (req, res) {
         if (error) {
             console.log("connection error " + error);
         }
-         var collection = db.collection('weather');
+         var collection = db.collection('weather2');
       
          collection.find().toArray(function (err, docs) {
             if (err) {

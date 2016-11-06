@@ -4,7 +4,7 @@ var request = require('request');
 var Logger = require('./services/logger.js');
 var MongoClient = require('mongodb').MongoClient;
 
-var url = 'http://api.openweathermap.org/data/2.5/weather?q=Rivne,ua&APPID=3e78ad2536ed323a1c1e68f8512485b0';
+var url = 'http://api.wunderground.com/api/3a12f2714ca1b6e2/conditions/q/Rivne.json';
 var urlDB = 'mongodb://localhost:27017/weather';
 
 var logger = new Logger('./logs/log.txt', false);
@@ -24,7 +24,7 @@ setInterval(function () {
                 }
 
 
-                var collection = db.collection('weather');
+                var collection = db.collection('weather2');
                 
                 collection.insertOne(JSON.parse(body).main, function (error, result) {
                     if (error) {
